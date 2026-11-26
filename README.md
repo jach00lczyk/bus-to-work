@@ -122,3 +122,7 @@ Słupek 06 na Marymont-Potok w kierunku „Do domu” potwierdzony w GTFS (kursy
   w oknie ±30 min od teraz), bo API przełącza się ok. 04:51.
 - **Brak odjazdu z pętli w API**: czas szacowany z typowego przejazdu pętla → mój przystanek.
 - Kursy, które nie dojeżdżają do celu (np. skrócone do Pl. Wilsona), są pomijane.
+- **Zawodne połączenie miasto ↔ Cloudflare** (26.11.2026: większość zapytań z Workera wisiała, ponowione
+  przechodziły): Worker ma limit 2,5 s i 3 próby, pyta słupki po kolei i pamięta udane odjazdy do zmiany
+  dnia rozkładowego. Strona trzyma rozkład dnia w `localStorage` (`bus185.tt`), więc po ponownym
+  otwarciu od razu pokazuje kursy wg rozkładu, nawet gdy API chwilowo nie odpowiada.

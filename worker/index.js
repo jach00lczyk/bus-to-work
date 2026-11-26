@@ -5,13 +5,19 @@
 
 import config from '../data/config.json' with { type: 'json' };
 import { parseRows, parsePositions, assembleTimetable } from '../lib/timetable.js';
+import { nextFlip } from '../lib/time.js';
 
 const API = 'https://dane.um.warszawa.pl/api/action/';
-const TIMEOUT_MS = 5000;
+// Miasto potrafi „zgubić” połączenie z Cloudflare: zapytanie wisi, a ponowione przechodzi w ułamku sekundy.
+// Dlatego krótki limit i kilka prób (normalnie API odpowiada w 30–110 ms).
+const TIMEOUT_MS = 2500;
+const ATTEMPTS = 3;
 const POSITIONS_TTL_MS = 10_000;
 
 // Pamięć izolatu: przeżywa między zapytaniami tego samego egzemplarza Workera.
-export const mem = { positions: null, positionsAt: 0, timetable: null, lastGood: {} };
+// stops: udane odjazdy pojedynczych słupków do zmiany dnia rozkładowego, żeby przy zawodnym API
+// kolejne próby dociągały tylko brakujące słupki.
+export const mem = { positions: null, positionsAt: 0, timetable: null, stops: {}, lastGood: {} };
 
 class CityError extends Error {}
 
@@ -22,7 +28,7 @@ async function city(env, action, body) {
     body: body === undefined ? undefined : JSON.stringify(body)
   };
   let lastErr;
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
     try {
       const res = await fetch(API + action, { ...init, signal: AbortSignal.timeout(TIMEOUT_MS) });
       const text = await res.text();
@@ -56,14 +62,32 @@ async function departures(env, stop) {
   return parseRows(body);
 }
 
+async function stopDepartures(env, stop, now) {
+  const key = stop.zespol + '/' + stop.slupek;
+  const hit = mem.stops[key];
+  if (hit && now < hit.until) return hit.rows;
+  const rows = await departures(env, stop);
+  mem.stops[key] = { rows, until: nextFlip(now) };
+  return rows;
+}
+
 async function getTimetable(env, now) {
   if (mem.timetable && now < mem.timetable.validUntil) return mem.timetable;
+  // Po kolei, nie równolegle: mniej jednoczesnych połączeń do miasta. Udane słupki zostają w pamięci.
   const rows = {};
-  await Promise.all(['praca', 'dom'].map(async (d) => {
+  let failed = null;
+  for (const d of ['praca', 'dom']) {
     const c = config.directions[d];
-    const [loop, my, dest] = await Promise.all([departures(env, c.loop), departures(env, c.myStop), departures(env, c.dest)]);
-    rows[d] = { loop, my, dest };
-  }));
+    rows[d] = {};
+    for (const [k, stop] of [['loop', c.loop], ['my', c.myStop], ['dest', c.dest]]) {
+      try {
+        rows[d][k] = await stopDepartures(env, stop, now);
+      } catch (e) {
+        failed ??= e;
+      }
+    }
+  }
+  if (failed) throw failed;
   const tt = assembleTimetable(rows, now);
   mem.timetable = tt;
   return tt;

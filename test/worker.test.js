@@ -10,12 +10,16 @@ let calls, mode;
 beforeEach(() => {
   calls = [];
   mode = 'ok';
-  mem.positions = null; mem.timetable = null; mem.lastGood = {};
+  mem.positions = null; mem.timetable = null; mem.stops = {}; mem.lastGood = {};
   globalThis.fetch = async (url, init) => {
     const action = String(url).split('/').at(-1);
     const body = init.body ? JSON.parse(init.body) : null;
     calls.push({ action, body, auth: init.headers.Authorization });
     if (mode === 'down') return new Response('{"message":"Service unavailable"}', { status: 500 });
+    if (mode === 'flaky' && calls.filter((c) => c.action === action && JSON.stringify(c.body) === JSON.stringify(body)).length === 1) {
+      throw new DOMException('The operation was aborted due to timeout', 'TimeoutError');
+    }
+    if (mode === 'stop-down' && body?.busstopId === '3292') return new Response('{"message":"Service unavailable"}', { status: 500 });
     if (action === 'get_ztm_lokalizacja_pojazdow') {
       if (mode === 'positions-string-only') return Response.json(body.type === '1' ? readJson('test/fixtures/positions.json') : []);
       if (mode === 'positions-weird') return Response.json({ message: 'coś innego' });
@@ -84,7 +88,7 @@ test('awaria miasta: 502 z ostatnią dobrą odpowiedzią, jedna ponowna próba',
   calls = [];
   const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(r.status, 502);
-  assert.equal(calls.length, 2);
+  assert.equal(calls.length, 3, 'trzy próby');
   const body = await r.json();
   assert.equal(body.stale, true);
   assert.deepEqual(body.positions, ok.positions);
@@ -105,4 +109,24 @@ test('/positions: odpowiedź, która nie jest listą, to błąd (502), nie pusta
   mode = 'positions-weird';
   const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(r.status, 502);
+});
+
+test('zawodne API: zawieszone zapytanie ponawiane, odpowiedź przychodzi', async () => {
+  mode = 'flaky';
+  const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
+  assert.equal(r.status, 200);
+  assert.equal(calls.length, 2);
+});
+
+test('rozkład: udane słupki zapamiętane, kolejna próba dociąga tylko brakujący', async () => {
+  mode = 'stop-down';
+  const r = await get('/timetable', { 'X-App-Key': env.APP_KEY });
+  assert.equal(r.status, 502);
+  const okStops = new Set(calls.filter((c) => c.body.busstopId !== '3292').map((c) => c.body.busstopId + c.body.busstopNr));
+  assert.equal(okStops.size, 5);
+  mode = 'ok';
+  calls = [];
+  const r2 = await get('/timetable', { 'X-App-Key': env.APP_KEY });
+  assert.equal(r2.status, 200);
+  assert.deepEqual(calls.map((c) => c.body.busstopId + '/' + c.body.busstopNr), ['3292/04']);
 });

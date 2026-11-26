@@ -8,7 +8,7 @@ import { hhmm, MIN } from './lib/time.js';
 
 const POLL_MS = 15_000;
 const STALE_WARN_MS = 2 * MIN;
-const KEYS = { dir: 'bus185.dir', pins: 'bus185.pins', appKey: 'bus185.appKey' };
+const KEYS = { dir: 'bus185.dir', pins: 'bus185.pins', appKey: 'bus185.appKey', tt: 'bus185.tt' };
 
 // ---------- localStorage (Safari potrafi wyczyścić dane nieużywanej strony) ----------
 
@@ -85,7 +85,10 @@ async function fetchTimetable() {
   S.inflight.timetable = true;
   try {
     const data = await api('/timetable');
-    if (data && Array.isArray(data.praca)) S.tt = loadTimetable(data, S.geo);
+    if (data && Array.isArray(data.praca)) {
+      S.tt = loadTimetable(data, S.geo);
+      store.set(KEYS.tt, data); // rozkład dnia na wypadek zawodnego API przy następnym otwarciu
+    }
   } finally {
     S.inflight.timetable = false;
     render();
@@ -388,6 +391,10 @@ async function boot() {
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   S.proxy = (local ? location.origin + '/mock' : config.proxyUrl).replace(/\/$/, '');
   for (const d of DIRS) makePanel(d);
+  const saved = store.get(KEYS.tt);
+  if (saved && Array.isArray(saved.praca) && Date.now() < Number(saved.validUntil)) {
+    try { S.tt = loadTimetable(saved, S.geo); } catch { store.set(KEYS.tt, null); }
+  }
   if (location.hash === '#klucz') keyFromHash();
   if (!S.appKey) lock(); // formularz przed pierwszym rysowaniem, żeby błąd w render() go nie zablokował
   render();
