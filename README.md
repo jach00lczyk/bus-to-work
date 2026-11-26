@@ -5,7 +5,9 @@ Jedna strona w Safari na iPhonie: autobusy linii 185 na żywo na dwóch odcinkac
 
 - Strona: GitHub Pages, czysty HTML/CSS/JS (moduły ES), bez kroku budowania.
 - Proxy: Cloudflare Worker (`worker/index.js`), trzyma token miasta i dodaje CORS.
-- Dane: `dane.um.warszawa.pl` (pozycje co 15 s, rozkład raz na dzień rozkładowy).
+- Pozycje: `dane.um.warszawa.pl` przez Workera, co 15 s.
+- Rozkład: GTFS z mkuran.pl, przerabiany codziennie przez GitHub Actions na `data/timetable.json`
+  (2 tygodnie naprzód) i publikowany razem ze stroną. Awaryjnie rozkład z API miasta przez Workera.
 
 ```
 index.html, styles.css, app.js   UI, odpytywanie, stan
@@ -16,6 +18,7 @@ lib/timetable.js                 parsowanie API, składanie kursów (używa go W
 data/config.json                 przystanki, adres proxy
 data/route-185.json              przystanki trasy i typowe czasy (generowany z GTFS)
 scripts/build-route.mjs          GTFS -> route-185.json
+scripts/build-timetable.mjs      GTFS -> data/timetable.json (codziennie w GitHub Actions)
 scripts/check-stops.mjs          sprawdzenie słupków w API (z tokenem, lokalnie)
 scripts/dev-server.mjs           podgląd lokalny z symulacją autobusów
 worker/index.js, wrangler.toml   proxy
@@ -108,6 +111,13 @@ Z GTFS (mkuran.pl, `stop_id` = zespół + słupek); do potwierdzenia skryptem `c
 Słupek 06 na Marymont-Potok w kierunku „Do domu” potwierdzony w GTFS (kursy TP-GWI).
 
 ## Decyzje poza specyfikacją
+
+- **Rozkład z GTFS zamiast z API miasta** (26.11.2026): miasto odpowiadało Workerowi z Cloudflare
+  bardzo zawodnie. Rozkład nie zmienia się w ciągu dnia, więc buduje go codzienna akcja GitHub
+  (`cron` w `pages.yml`) z GTFS mkuran.pl – bez tokenu i bez API miasta. Te same godziny i brygady
+  co w API; id kursów w tym samym formacie, więc przypięcia działają tak samo. Plik ma kilka dni
+  naraz, więc kursy po północy i zmiana dnia rozkładowego nie wymagają zgadywania. GitHub wyłącza
+  harmonogram po 60 dniach bez zmian w repo – wtedy włączyć go w zakładce Actions (zapas: 2 tygodnie).
 
 - **Opóźnienie** liczone względem planowego czasu w miejscu, w którym jest autobus (interpolacja
   w odcinku między przystankami), a nie na ostatnim minionym przystanku. Wersja ze specyfikacji

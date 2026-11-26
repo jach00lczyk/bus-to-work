@@ -1,7 +1,7 @@
 // UI, odpytywanie i stan. Cała logika kursów jest w lib/ (bez DOM).
 
 import {
-  DIRS, prepareGeo, loadTimetable, updateTracks, newestTime, buildBoard, reconcilePins,
+  DIRS, prepareGeo, loadTimetable, loadGtfsFile, updateTracks, newestTime, buildBoard, reconcilePins,
   togglePin, effectiveDir, manualDir, tileView
 } from './lib/board.js';
 import { hhmm, MIN } from './lib/time.js';
@@ -80,10 +80,24 @@ async function fetchPositions() {
   }
 }
 
+/** Rozkład z GTFS budowany codziennie na GitHubie (ten sam serwer co strona, bez klucza i bez API miasta). */
+async function fetchGtfsTimetable() {
+  try {
+    const res = await fetch('data/timetable.json', { cache: 'no-cache' });
+    if (!res.ok) return null;
+    return loadGtfsFile(await res.json(), S.geo, Date.now());
+  } catch {
+    return null;
+  }
+}
+
 async function fetchTimetable() {
   if (S.inflight.timetable) return;
   S.inflight.timetable = true;
   try {
+    const gtfs = await fetchGtfsTimetable();
+    if (gtfs) { S.tt = gtfs; return; }
+    // Awaryjnie: rozkład z API miasta przez Workera.
     const data = await api('/timetable');
     if (data && Array.isArray(data.praca)) {
       S.tt = loadTimetable(data, S.geo);
@@ -292,7 +306,7 @@ function render() {
   }
 
   let board = buildBoard({ geo: S.geo, tt: S.tt, tracks: S.tracks, now, pins: S.pins });
-  const pins = reconcilePins(S.pins, board, S.tt.serviceDate);
+  const pins = reconcilePins(S.pins, board);
   if (pins.praca !== S.pins.praca || pins.dom !== S.pins.dom) {
     S.pins = pins;
     store.set(KEYS.pins, pins);
@@ -400,6 +414,7 @@ async function boot() {
   render();
   setInterval(render, 1000);
   if (!S.locked && !document.hidden) startPolling();
+  else fetchTimetable(); // rozkład z Pages nie potrzebuje klucza
 }
 
 boot().catch((e) => showError('Błąd startu: ' + (e?.message ?? e)));

@@ -192,15 +192,15 @@ test('przypięty zostaje w trasie, odpina się po dojechaniu i po zmianie dnia',
   const b = buildBoard({ geo, tt, tracks: ctx.tracks, now, pins });
   assert.equal(b.praca.pinId, C.id);
   assert.equal(b.praca.items[b.praca.hiddenCount].state, 'trasa');
-  assert.deepEqual(reconcilePins(pins, b, tt.serviceDate), pins);
+  assert.deepEqual(reconcilePins(pins, b), pins);
   // dojechał
   const d = driving(C, g.destIdx + 0.5, 0);
   const ctx2 = ctxFor(d.sets, d.now);
   const b2 = buildBoard({ geo, tt, tracks: ctx2.tracks, now: d.now, pins });
   assert.equal(b2.praca.pinId, null);
-  assert.equal(reconcilePins(pins, b2, tt.serviceDate).praca, null);
-  // inny dzień rozkładowy
-  assert.equal(reconcilePins(pins, b, '2026-11-27').praca, null);
+  assert.equal(reconcilePins(pins, b2).praca, null);
+  // kurs z innego dnia rozkładowego nie występuje na liście
+  assert.equal(reconcilePins({ praca: '2026-11-25_13_0754', dom: null }, b).praca, null);
 });
 
 test('ślady: postój nie kasuje kierunku jazdy, starsze pozycje ignorowane', () => {

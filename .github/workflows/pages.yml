@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Codziennie ok. 02:40 czasu warszawskiego (zimą; latem 03:40): świeży rozkład z GTFS mkuran.pl
+    # (aktualizowany ok. 01:00). GitHub wyłącza harmonogram po 60 dniach bez zmian w repo –
+    # wtedy włączyć go w zakładce Actions; plik i tak ma zapas 2 tygodni.
+    - cron: '40 1 * * *'
 
 permissions:
   contents: read
@@ -32,6 +37,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Rozkład z GTFS (data/timetable.json)
+        run: node scripts/build-timetable.mjs
       - name: Złóż stronę (tylko pliki potrzebne w przeglądarce)
         run: |
           mkdir -p _site
