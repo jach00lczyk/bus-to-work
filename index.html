@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-title" content="185">
+<title>185</title>
+<link rel="stylesheet" href="styles.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<div class="app noanim" id="app">
+
+<header class="hdr">
+<span class="hdr-line">185</span>
+<h1 class="hdr-route" id="route">Marymont-Potok → Sielce</h1>
+<button type="button" class="refresh" id="refresh" aria-label="Odśwież dane">
+<span id="age">–′––″</span>
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="spin"><path d="M21 12a9 9 0 1 1-2.6-6.4"></path><path d="M21 4v5h-5"></path></svg>
+</button>
+</header>
+
+<div class="seg" role="group" aria-label="Kierunek" id="seg">
+<span class="seg-thumb" aria-hidden="true"></span>
+<button type="button" data-dir="praca" aria-pressed="true">Do pracy</button>
+<button type="button" data-dir="dom" aria-pressed="false">Do domu</button>
+</div>
+
+<form class="keyform" id="keyform" hidden>
+<label for="appkey">Klucz aplikacji</label>
+<input id="appkey" name="appkey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+<button type="submit">Zapisz</button>
+</form>
+
+<div class="panels" id="panels"></div>
+
+<footer class="foot">
+<span>Dane: dane.um.warszawa.pl · automatycznie co 15 s</span>
+<span class="foot-warn" id="stale" hidden>Brak nowych danych z API</span>
+</footer>
+
+</div>
+
+<template id="tpl-panel">
+<section class="panel">
+<div class="wrap group-wrap"><div class="clip"><div class="pb">
+<div class="box">
+<button type="button" class="box-head" aria-expanded="false">
+<svg width="14" height="18" viewBox="0 0 14 18" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6.5l4-4 4 4"></path><path d="M3 11.5l4 4 4-4"></path></svg>
+<span class="box-title"></span>
+</button>
+<div class="wrap inner-wrap"><div class="clip"><div class="inner-list"></div></div></div>
+</div>
+</div></div></div>
+<div class="outer-list"></div>
+</section>
+</template>
+
+<template id="tpl-tile">
+<div class="wrap tile"><div class="clip"><div class="pb">
+<article class="card">
+<div class="l1">
+<svg class="ring" width="18" height="18" viewBox="1 1 18 18" role="img"><circle cx="10" cy="10" r="8" fill="none" stroke="#3A3A3C" stroke-width="2"></circle><circle class="ring-val" cx="10" cy="10" r="8" fill="none" stroke="#D1D1D6" stroke-width="2" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"></circle></svg>
+<span class="t-dep"></span>
+<svg class="arrow" width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5.5h11"></path><path d="M8 1.5l4 4-4 4"></path></svg>
+<span class="t-arr"></span>
+<span class="mins"><span class="mins-cap"></span><span class="mins-num"></span></span>
+</div>
+<div class="l2"><s class="old"></s><span class="state"></span></div>
+<div class="l3">
+<span class="chip"></span>
+<span class="place"></span>
+<button type="button" class="pin" aria-pressed="false">
+<svg width="21" height="21" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16v6"></path><path d="M8 3h8l-1.5 6.5L18 13v3H6v-3l3.5-3.5z"></path></svg>
+</button>
+</div>
+</article>
+</div></div></div>
+</template>
+</body>
+</html>

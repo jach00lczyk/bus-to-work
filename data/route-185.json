@@ -1,0 +1,913 @@
+{
+ "line": "185",
+ "generated": "2026-11-26T19:32:19.164Z",
+ "source": "mkuran.pl/gtfs/warsaw.zip",
+ "feedVersion": "2026-11-26 00:15:13",
+ "directions": {
+  "praca": {
+   "headsign": "CH Ursynów",
+   "variant": "TP-USN",
+   "trips": 500,
+   "stops": [
+    {
+     "id": "608271",
+     "zespol": "6082",
+     "slupek": "71",
+     "name": "Gwiaździsta",
+     "lat": 52.289666,
+     "lon": 20.975752,
+     "t": 0
+    },
+    {
+     "id": "608204",
+     "zespol": "6082",
+     "slupek": "04",
+     "name": "Gwiaździsta",
+     "lat": 52.287091,
+     "lon": 20.97605,
+     "t": 60
+    },
+    {
+     "id": "608603",
+     "zespol": "6086",
+     "slupek": "03",
+     "name": "Klaudyny",
+     "lat": 52.284825,
+     "lon": 20.970815,
+     "t": 120
+    },
+    {
+     "id": "613601",
+     "zespol": "6136",
+     "slupek": "01",
+     "name": "Sobocka",
+     "lat": 52.28175,
+     "lon": 20.97257,
+     "t": 180
+    },
+    {
+     "id": "613703",
+     "zespol": "6137",
+     "slupek": "03",
+     "name": "Rudzka",
+     "lat": 52.27907,
+     "lon": 20.974465,
+     "t": 240
+    },
+    {
+     "id": "613301",
+     "zespol": "6133",
+     "slupek": "01",
+     "name": "Os. Potok",
+     "lat": 52.27876,
+     "lon": 20.977261,
+     "t": 300
+    },
+    {
+     "id": "607701",
+     "zespol": "6077",
+     "slupek": "01",
+     "name": "Marymont-Potok",
+     "lat": 52.27453,
+     "lon": 20.981534,
+     "t": 420
+    },
+    {
+     "id": "607601",
+     "zespol": "6076",
+     "slupek": "01",
+     "name": "Bohomolca",
+     "lat": 52.272646,
+     "lon": 20.98308,
+     "t": 480
+    },
+    {
+     "id": "600303",
+     "zespol": "6003",
+     "slupek": "03",
+     "name": "Pl. Wilsona",
+     "lat": 52.26971,
+     "lon": 20.985458,
+     "t": 540
+    },
+    {
+     "id": "600305",
+     "zespol": "6003",
+     "slupek": "05",
+     "name": "Pl. Wilsona",
+     "lat": 52.269277,
+     "lon": 20.988159,
+     "t": 660
+    },
+    {
+     "id": "609901",
+     "zespol": "6099",
+     "slupek": "01",
+     "name": "Czarnieckiego",
+     "lat": 52.270486,
+     "lon": 20.992115,
+     "t": 720
+    },
+    {
+     "id": "609601",
+     "zespol": "6096",
+     "slupek": "01",
+     "name": "Centrum Olimpijskie",
+     "lat": 52.270378,
+     "lon": 20.997033,
+     "t": 780
+    },
+    {
+     "id": "609501",
+     "zespol": "6095",
+     "slupek": "01",
+     "name": "Cytadela",
+     "lat": 52.265005,
+     "lon": 21.00362,
+     "t": 840
+    },
+    {
+     "id": "705501",
+     "zespol": "7055",
+     "slupek": "01",
+     "name": "Most Gdański",
+     "lat": 52.259859,
+     "lon": 21.007223,
+     "t": 960
+    },
+    {
+     "id": "705601",
+     "zespol": "7056",
+     "slupek": "01",
+     "name": "Sanguszki",
+     "lat": 52.254858,
+     "lon": 21.011554,
+     "t": 1080
+    },
+    {
+     "id": "710401",
+     "zespol": "7104",
+     "slupek": "01",
+     "name": "Boleść",
+     "lat": 52.252005,
+     "lon": 21.014461,
+     "t": 1140
+    },
+    {
+     "id": "705701",
+     "zespol": "7057",
+     "slupek": "01",
+     "name": "Podzamcze",
+     "lat": 52.249342,
+     "lon": 21.017305,
+     "t": 1200
+    },
+    {
+     "id": "705801",
+     "zespol": "7058",
+     "slupek": "01",
+     "name": "Nowy Zjazd",
+     "lat": 52.24686,
+     "lon": 21.02042,
+     "t": 1260
+    },
+    {
+     "id": "707901",
+     "zespol": "7079",
+     "slupek": "01",
+     "name": "Metro Centrum Nauki Kopernik",
+     "lat": 52.241031,
+     "lon": 21.03009,
+     "t": 1380
+    },
+    {
+     "id": "700305",
+     "zespol": "7003",
+     "slupek": "05",
+     "name": "Most Poniatowskiego",
+     "lat": 52.233944,
+     "lon": 21.03695,
+     "t": 1500
+    },
+    {
+     "id": "709801",
+     "zespol": "7098",
+     "slupek": "01",
+     "name": "Pomnik Sapera",
+     "lat": 52.228185,
+     "lon": 21.042066,
+     "t": 1620
+    },
+    {
+     "id": "707603",
+     "zespol": "7076",
+     "slupek": "03",
+     "name": "Torwar",
+     "lat": 52.224105,
+     "lon": 21.043613,
+     "t": 1680
+    },
+    {
+     "id": "707551",
+     "zespol": "7075",
+     "slupek": "51",
+     "name": "Legia - Stadion",
+     "lat": 52.22207,
+     "lon": 21.044314,
+     "t": 1740
+    },
+    {
+     "id": "707401",
+     "zespol": "7074",
+     "slupek": "01",
+     "name": "Zaruskiego",
+     "lat": 52.218719,
+     "lon": 21.045546,
+     "t": 1800
+    },
+    {
+     "id": "707301",
+     "zespol": "7073",
+     "slupek": "01",
+     "name": "Szwoleżerów",
+     "lat": 52.21526,
+     "lon": 21.045835,
+     "t": 1860
+    },
+    {
+     "id": "305701",
+     "zespol": "3057",
+     "slupek": "01",
+     "name": "Bartycka",
+     "lat": 52.21208,
+     "lon": 21.04697,
+     "t": 1920
+    },
+    {
+     "id": "305801",
+     "zespol": "3058",
+     "slupek": "01",
+     "name": "Sielce",
+     "lat": 52.205835,
+     "lon": 21.048555,
+     "t": 2040
+    },
+    {
+     "id": "305901",
+     "zespol": "3059",
+     "slupek": "01",
+     "name": "Chełmska",
+     "lat": 52.201452,
+     "lon": 21.049765,
+     "t": 2100
+    },
+    {
+     "id": "306001",
+     "zespol": "3060",
+     "slupek": "01",
+     "name": "Al. Witosa",
+     "lat": 52.196257,
+     "lon": 21.052439,
+     "t": 2220
+    },
+    {
+     "id": "306201",
+     "zespol": "3062",
+     "slupek": "01",
+     "name": "Gołkowska",
+     "lat": 52.192266,
+     "lon": 21.057083,
+     "t": 2340
+    },
+    {
+     "id": "306301",
+     "zespol": "3063",
+     "slupek": "01",
+     "name": "Limanowskiego",
+     "lat": 52.189553,
+     "lon": 21.06049,
+     "t": 2400
+    },
+    {
+     "id": "306404",
+     "zespol": "3064",
+     "slupek": "04",
+     "name": "Goraszewska",
+     "lat": 52.186141,
+     "lon": 21.062652,
+     "t": 2520
+    },
+    {
+     "id": "309202",
+     "zespol": "3092",
+     "slupek": "02",
+     "name": "Klarysewska",
+     "lat": 52.18462,
+     "lon": 21.060277,
+     "t": 2580
+    },
+    {
+     "id": "303304",
+     "zespol": "3033",
+     "slupek": "04",
+     "name": "Św. Bonifacego",
+     "lat": 52.181102,
+     "lon": 21.054665,
+     "t": 2700
+    },
+    {
+     "id": "309302",
+     "zespol": "3093",
+     "slupek": "02",
+     "name": "Batumi",
+     "lat": 52.179618,
+     "lon": 21.052407,
+     "t": 2760
+    },
+    {
+     "id": "309402",
+     "zespol": "3094",
+     "slupek": "02",
+     "name": "Stegny",
+     "lat": 52.177826,
+     "lon": 21.04852,
+     "t": 2820
+    },
+    {
+     "id": "303901",
+     "zespol": "3039",
+     "slupek": "01",
+     "name": "Dolina Służewiecka",
+     "lat": 52.174554,
+     "lon": 21.043769,
+     "t": 3000
+    },
+    {
+     "id": "309801",
+     "zespol": "3098",
+     "slupek": "01",
+     "name": "Nowoursynowska",
+     "lat": 52.169835,
+     "lon": 21.03972,
+     "t": 3120
+    },
+    {
+     "id": "312001",
+     "zespol": "3120",
+     "slupek": "01",
+     "name": "Ursynów Płn.",
+     "lat": 52.16208,
+     "lon": 21.03813,
+     "t": 3300
+    },
+    {
+     "id": "312101",
+     "zespol": "3121",
+     "slupek": "01",
+     "name": "Strzeleckiego",
+     "lat": 52.15612,
+     "lon": 21.045,
+     "t": 3420
+    },
+    {
+     "id": "312201",
+     "zespol": "3122",
+     "slupek": "01",
+     "name": "Teligi",
+     "lat": 52.154363,
+     "lon": 21.049208,
+     "t": 3480
+    },
+    {
+     "id": "313804",
+     "zespol": "3138",
+     "slupek": "04",
+     "name": "Polinezyjska",
+     "lat": 52.150858,
+     "lon": 21.046991,
+     "t": 3540
+    },
+    {
+     "id": "328002",
+     "zespol": "3280",
+     "slupek": "02",
+     "name": "Metro Imielin",
+     "lat": 52.149443,
+     "lon": 21.0447,
+     "t": 3660
+    },
+    {
+     "id": "313904",
+     "zespol": "3139",
+     "slupek": "04",
+     "name": "Miklaszewskiego",
+     "lat": 52.14755,
+     "lon": 21.04166,
+     "t": 3720
+    },
+    {
+     "id": "329901",
+     "zespol": "3299",
+     "slupek": "01",
+     "name": "Szpital Południowy",
+     "lat": 52.145364,
+     "lon": 21.037423,
+     "t": 3840
+    },
+    {
+     "id": "330001",
+     "zespol": "3300",
+     "slupek": "01",
+     "name": "Hospicjum Onkologiczne",
+     "lat": 52.143611,
+     "lon": 21.038237,
+     "t": 3900
+    },
+    {
+     "id": "333302",
+     "zespol": "3333",
+     "slupek": "02",
+     "name": "Pileckiego",
+     "lat": 52.140811,
+     "lon": 21.037492,
+     "t": 4020
+    },
+    {
+     "id": "345402",
+     "zespol": "3454",
+     "slupek": "02",
+     "name": "Indiry Gandhi",
+     "lat": 52.142197,
+     "lon": 21.030186,
+     "t": 4080
+    },
+    {
+     "id": "329202",
+     "zespol": "3292",
+     "slupek": "02",
+     "name": "CH Ursynów",
+     "lat": 52.142864,
+     "lon": 21.023599,
+     "t": 4200
+    },
+    {
+     "id": "329204",
+     "zespol": "3292",
+     "slupek": "04",
+     "name": "CH Ursynów",
+     "lat": 52.142638,
+     "lon": 21.021954,
+     "t": 4320
+    }
+   ]
+  },
+  "dom": {
+   "headsign": "Gwiaździsta",
+   "variant": "TP-GWI",
+   "trips": 516,
+   "stops": [
+    {
+     "id": "329204",
+     "zespol": "3292",
+     "slupek": "04",
+     "name": "CH Ursynów",
+     "lat": 52.142638,
+     "lon": 21.021954,
+     "t": 0
+    },
+    {
+     "id": "329201",
+     "zespol": "3292",
+     "slupek": "01",
+     "name": "CH Ursynów",
+     "lat": 52.142495,
+     "lon": 21.025766,
+     "t": 120
+    },
+    {
+     "id": "345401",
+     "zespol": "3454",
+     "slupek": "01",
+     "name": "Indiry Gandhi",
+     "lat": 52.141513,
+     "lon": 21.03317,
+     "t": 180
+    },
+    {
+     "id": "333303",
+     "zespol": "3333",
+     "slupek": "03",
+     "name": "Pileckiego",
+     "lat": 52.141645,
+     "lon": 21.038878,
+     "t": 300
+    },
+    {
+     "id": "330002",
+     "zespol": "3300",
+     "slupek": "02",
+     "name": "Hospicjum Onkologiczne",
+     "lat": 52.144581,
+     "lon": 21.038173,
+     "t": 360
+    },
+    {
+     "id": "329903",
+     "zespol": "3299",
+     "slupek": "03",
+     "name": "Szpital Południowy",
+     "lat": 52.146118,
+     "lon": 21.038225,
+     "t": 420
+    },
+    {
+     "id": "313903",
+     "zespol": "3139",
+     "slupek": "03",
+     "name": "Miklaszewskiego",
+     "lat": 52.148193,
+     "lon": 21.043151,
+     "t": 480
+    },
+    {
+     "id": "328001",
+     "zespol": "3280",
+     "slupek": "01",
+     "name": "Metro Imielin",
+     "lat": 52.150203,
+     "lon": 21.046395,
+     "t": 600
+    },
+    {
+     "id": "313803",
+     "zespol": "3138",
+     "slupek": "03",
+     "name": "Polinezyjska",
+     "lat": 52.15155,
+     "lon": 21.04849,
+     "t": 660
+    },
+    {
+     "id": "312202",
+     "zespol": "3122",
+     "slupek": "02",
+     "name": "Teligi",
+     "lat": 52.155419,
+     "lon": 21.049075,
+     "t": 780
+    },
+    {
+     "id": "312102",
+     "zespol": "3121",
+     "slupek": "02",
+     "name": "Strzeleckiego",
+     "lat": 52.157163,
+     "lon": 21.043851,
+     "t": 840
+    },
+    {
+     "id": "312002",
+     "zespol": "3120",
+     "slupek": "02",
+     "name": "Ursynów Płn.",
+     "lat": 52.162936,
+     "lon": 21.037745,
+     "t": 960
+    },
+    {
+     "id": "309802",
+     "zespol": "3098",
+     "slupek": "02",
+     "name": "Nowoursynowska",
+     "lat": 52.17099,
+     "lon": 21.04186,
+     "t": 1140
+    },
+    {
+     "id": "303902",
+     "zespol": "3039",
+     "slupek": "02",
+     "name": "Dolina Służewiecka",
+     "lat": 52.175922,
+     "lon": 21.044629,
+     "t": 1260
+    },
+    {
+     "id": "309401",
+     "zespol": "3094",
+     "slupek": "01",
+     "name": "Stegny",
+     "lat": 52.177776,
+     "lon": 21.049094,
+     "t": 1380
+    },
+    {
+     "id": "309301",
+     "zespol": "3093",
+     "slupek": "01",
+     "name": "Batumi",
+     "lat": 52.180433,
+     "lon": 21.053985,
+     "t": 1440
+    },
+    {
+     "id": "303303",
+     "zespol": "3033",
+     "slupek": "03",
+     "name": "Św. Bonifacego",
+     "lat": 52.182234,
+     "lon": 21.056775,
+     "t": 1560
+    },
+    {
+     "id": "309201",
+     "zespol": "3092",
+     "slupek": "01",
+     "name": "Klarysewska",
+     "lat": 52.18482,
+     "lon": 21.06086,
+     "t": 1620
+    },
+    {
+     "id": "306403",
+     "zespol": "3064",
+     "slupek": "03",
+     "name": "Goraszewska",
+     "lat": 52.187567,
+     "lon": 21.063203,
+     "t": 1740
+    },
+    {
+     "id": "306302",
+     "zespol": "3063",
+     "slupek": "02",
+     "name": "Limanowskiego",
+     "lat": 52.190924,
+     "lon": 21.059325,
+     "t": 1800
+    },
+    {
+     "id": "306102",
+     "zespol": "3061",
+     "slupek": "02",
+     "name": "Pl. Bernardyński",
+     "lat": 52.194802,
+     "lon": 21.05468,
+     "t": 1860
+    },
+    {
+     "id": "306002",
+     "zespol": "3060",
+     "slupek": "02",
+     "name": "Al. Witosa",
+     "lat": 52.199018,
+     "lon": 21.051419,
+     "t": 1980
+    },
+    {
+     "id": "305902",
+     "zespol": "3059",
+     "slupek": "02",
+     "name": "Chełmska",
+     "lat": 52.203749,
+     "lon": 21.049677,
+     "t": 2040
+    },
+    {
+     "id": "305802",
+     "zespol": "3058",
+     "slupek": "02",
+     "name": "Sielce",
+     "lat": 52.20792,
+     "lon": 21.04854,
+     "t": 2160
+    },
+    {
+     "id": "305702",
+     "zespol": "3057",
+     "slupek": "02",
+     "name": "Bartycka",
+     "lat": 52.21231,
+     "lon": 21.047312,
+     "t": 2280
+    },
+    {
+     "id": "707302",
+     "zespol": "7073",
+     "slupek": "02",
+     "name": "Szwoleżerów",
+     "lat": 52.215391,
+     "lon": 21.046296,
+     "t": 2340
+    },
+    {
+     "id": "707402",
+     "zespol": "7074",
+     "slupek": "02",
+     "name": "Zaruskiego",
+     "lat": 52.218766,
+     "lon": 21.045902,
+     "t": 2400
+    },
+    {
+     "id": "707503",
+     "zespol": "7075",
+     "slupek": "03",
+     "name": "Legia - Stadion",
+     "lat": 52.220921,
+     "lon": 21.045231,
+     "t": 2430
+    },
+    {
+     "id": "707604",
+     "zespol": "7076",
+     "slupek": "04",
+     "name": "Torwar",
+     "lat": 52.225104,
+     "lon": 21.043733,
+     "t": 2520
+    },
+    {
+     "id": "709802",
+     "zespol": "7098",
+     "slupek": "02",
+     "name": "Pomnik Sapera",
+     "lat": 52.229196,
+     "lon": 21.042175,
+     "t": 2580
+    },
+    {
+     "id": "700306",
+     "zespol": "7003",
+     "slupek": "06",
+     "name": "Most Poniatowskiego",
+     "lat": 52.234568,
+     "lon": 21.038522,
+     "t": 2700
+    },
+    {
+     "id": "707902",
+     "zespol": "7079",
+     "slupek": "02",
+     "name": "Metro Centrum Nauki Kopernik",
+     "lat": 52.241376,
+     "lon": 21.0303,
+     "t": 2820
+    },
+    {
+     "id": "710602",
+     "zespol": "7106",
+     "slupek": "02",
+     "name": "Karowa",
+     "lat": 52.24478,
+     "lon": 21.024285,
+     "t": 2880
+    },
+    {
+     "id": "705702",
+     "zespol": "7057",
+     "slupek": "02",
+     "name": "Podzamcze",
+     "lat": 52.24965,
+     "lon": 21.017584,
+     "t": 3000
+    },
+    {
+     "id": "710402",
+     "zespol": "7104",
+     "slupek": "02",
+     "name": "Boleść",
+     "lat": 52.253089,
+     "lon": 21.013974,
+     "t": 3060
+    },
+    {
+     "id": "705602",
+     "zespol": "7056",
+     "slupek": "02",
+     "name": "Sanguszki",
+     "lat": 52.255101,
+     "lon": 21.011943,
+     "t": 3120
+    },
+    {
+     "id": "705502",
+     "zespol": "7055",
+     "slupek": "02",
+     "name": "Most Gdański",
+     "lat": 52.260005,
+     "lon": 21.007756,
+     "t": 3180
+    },
+    {
+     "id": "609502",
+     "zespol": "6095",
+     "slupek": "02",
+     "name": "Cytadela",
+     "lat": 52.265406,
+     "lon": 21.003818,
+     "t": 3240
+    },
+    {
+     "id": "609602",
+     "zespol": "6096",
+     "slupek": "02",
+     "name": "Centrum Olimpijskie",
+     "lat": 52.271656,
+     "lon": 20.997437,
+     "t": 3360
+    },
+    {
+     "id": "609902",
+     "zespol": "6099",
+     "slupek": "02",
+     "name": "Czarnieckiego",
+     "lat": 52.270193,
+     "lon": 20.990617,
+     "t": 3420
+    },
+    {
+     "id": "600304",
+     "zespol": "6003",
+     "slupek": "04",
+     "name": "Pl. Wilsona",
+     "lat": 52.269864,
+     "lon": 20.985744,
+     "t": 3600
+    },
+    {
+     "id": "607602",
+     "zespol": "6076",
+     "slupek": "02",
+     "name": "Bohomolca",
+     "lat": 52.272838,
+     "lon": 20.983279,
+     "t": 3660
+    },
+    {
+     "id": "607706",
+     "zespol": "6077",
+     "slupek": "06",
+     "name": "Marymont-Potok",
+     "lat": 52.275723,
+     "lon": 20.980973,
+     "t": 3720
+    },
+    {
+     "id": "613302",
+     "zespol": "6133",
+     "slupek": "02",
+     "name": "Os. Potok",
+     "lat": 52.279012,
+     "lon": 20.977153,
+     "t": 3840
+    },
+    {
+     "id": "613702",
+     "zespol": "6137",
+     "slupek": "02",
+     "name": "Rudzka",
+     "lat": 52.279815,
+     "lon": 20.973648,
+     "t": 3900
+    },
+    {
+     "id": "613602",
+     "zespol": "6136",
+     "slupek": "02",
+     "name": "Sobocka",
+     "lat": 52.282417,
+     "lon": 20.972313,
+     "t": 3960
+    },
+    {
+     "id": "608601",
+     "zespol": "6086",
+     "slupek": "01",
+     "name": "Klaudyny",
+     "lat": 52.285728,
+     "lon": 20.971842,
+     "t": 4020
+    },
+    {
+     "id": "608202",
+     "zespol": "6082",
+     "slupek": "02",
+     "name": "Gwiaździsta",
+     "lat": 52.287945,
+     "lon": 20.976558,
+     "t": 4140
+    },
+    {
+     "id": "608271",
+     "zespol": "6082",
+     "slupek": "71",
+     "name": "Gwiaździsta",
+     "lat": 52.289666,
+     "lon": 20.975752,
+     "t": 4200
+    }
+   ]
+  }
+ }
+}

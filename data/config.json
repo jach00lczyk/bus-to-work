@@ -1,0 +1,22 @@
+{
+  "line": "185",
+  "proxyUrl": "https://bus-185-proxy.CHANGE-ME.workers.dev",
+  "directions": {
+    "praca": {
+      "label": "Do pracy",
+      "title": "Marymont-Potok → Sielce",
+      "destName": "Sielc",
+      "loop": { "zespol": "6082", "slupek": "04", "name": "Gwiaździsta" },
+      "myStop": { "zespol": "6077", "slupek": "01", "name": "Marymont-Potok" },
+      "dest": { "zespol": "3058", "slupek": "01", "name": "Sielce" }
+    },
+    "dom": {
+      "label": "Do domu",
+      "title": "Sielce → Marymont-Potok",
+      "destName": "Marymontu",
+      "loop": { "zespol": "3292", "slupek": "04", "name": "CH Ursynów" },
+      "myStop": { "zespol": "3058", "slupek": "02", "name": "Sielce" },
+      "dest": { "zespol": "6077", "slupek": "06", "name": "Marymont-Potok" }
+    }
+  }
+}

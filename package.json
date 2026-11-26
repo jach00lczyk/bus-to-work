@@ -1,0 +1,12 @@
+{
+  "name": "bus-185",
+  "private": true,
+  "type": "module",
+  "description": "Autobusy 185 na żywo: Marymont-Potok ⇄ Sielce",
+  "scripts": {
+    "test": "node --test test/",
+    "dev": "node scripts/dev-server.mjs",
+    "build-route": "node scripts/build-route.mjs",
+    "deploy-worker": "npx wrangler deploy"
+  }
+}

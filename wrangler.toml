@@ -1,0 +1,16 @@
+# Cloudflare Worker – proxy do API miasta. Wdrożenie: npx wrangler deploy
+name = "bus-185-proxy"
+main = "worker/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# Bez Smart Placement: Worker ma się uruchamiać blisko telefonu (w Polsce).
+# [placement] celowo nie ustawione.
+
+[vars]
+# Originy strony, rozdzielone przecinkami. Tylko te dostaną nagłówki CORS.
+ALLOWED_ORIGINS = "https://jach00lczyk.github.io"
+
+# Sekrety (nigdy w repo):
+#   npx wrangler secret put WAW_TOKEN   # token z dane.um.warszawa.pl/pl/key-api
+#   npx wrangler secret put APP_KEY     # losowy klucz aplikacji, np. openssl rand -base64 24
