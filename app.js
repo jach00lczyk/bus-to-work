@@ -371,6 +371,11 @@ function keyFromHash() {
 }
 window.addEventListener('hashchange', keyFromHash);
 
+// Safari na iOS ignoruje user-scalable=no; gesty szczypania blokujemy wprost.
+for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) {
+  document.addEventListener(ev, (e) => e.preventDefault(), { passive: false });
+}
+
 // ---------- start ----------
 
 async function boot() {
