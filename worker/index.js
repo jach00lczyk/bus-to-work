@@ -37,8 +37,13 @@ async function city(env, action, body) {
 
 async function getPositions(env, now) {
   if (mem.positions && now - mem.positionsAt < POSITIONS_TTL_MS) return mem.positions;
-  const body = await city(env, 'get_ztm_lokalizacja_pojazdow', { type: '1' });
-  const out = { fetchedAt: now, positions: parsePositions(body, config.line) };
+  // Uwaga: ta akcja chce LICZBY ({"type": 1}, jak w dokumentacji miasta); "1" daje pustą listę.
+  // Pozostałe akcje chcą stringów. Pusta lista mimo to -> jedna próba ze stringiem, na wypadek zmiany API.
+  let body = await city(env, 'get_ztm_lokalizacja_pojazdow', { type: 1 });
+  if (Array.isArray(body) && body.length === 0) body = await city(env, 'get_ztm_lokalizacja_pojazdow', { type: '1' });
+  const rows = Array.isArray(body) ? body : Array.isArray(body?.result) ? body.result : null;
+  if (!rows) throw new CityError(`get_ztm_lokalizacja_pojazdow: nieoczekiwana odpowiedź ${JSON.stringify(body).slice(0, 120)}`);
+  const out = { fetchedAt: now, positions: parsePositions(rows, config.line), total: rows.length };
   mem.positions = out;
   mem.positionsAt = now;
   return out;

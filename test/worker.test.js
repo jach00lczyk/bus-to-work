@@ -16,7 +16,12 @@ beforeEach(() => {
     const body = init.body ? JSON.parse(init.body) : null;
     calls.push({ action, body, auth: init.headers.Authorization });
     if (mode === 'down') return new Response('{"message":"Service unavailable"}', { status: 500 });
-    if (action === 'get_ztm_lokalizacja_pojazdow') return Response.json(readJson('test/fixtures/positions.json'));
+    if (action === 'get_ztm_lokalizacja_pojazdow') {
+      if (mode === 'positions-string-only') return Response.json(body.type === '1' ? readJson('test/fixtures/positions.json') : []);
+      if (mode === 'positions-weird') return Response.json({ message: 'coś innego' });
+      // Jak na nowym hoście: liczba działa, string daje pustą listę.
+      return Response.json(body.type === 1 ? readJson('test/fixtures/positions.json') : []);
+    }
     if (action === 'get_ztm_odjazdy_linii_z_przystanku') {
       return Response.json(readJson(`test/fixtures/odjazdy_${body.busstopId}_${body.busstopNr}_185.json`));
     }
@@ -47,14 +52,15 @@ test('tylko GET i tylko dwie trasy', async () => {
   assert.equal((await get('/get_ztm_przystanki_komunikacji_miejskiej', { 'X-App-Key': env.APP_KEY })).status, 404);
 });
 
-test('/positions: token surowy, wartości jako stringi, tylko linia 185, cache 10 s', async () => {
+test('/positions: token surowy, type jako liczba, tylko linia 185, cache 10 s', async () => {
   const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(r.status, 200);
   const data = await r.json();
   assert.equal(data.positions.length, 3);
   assert.deepEqual(Object.keys(data.positions[0]).sort(), ['brigade', 'lat', 'lon', 'time', 'vehicle']);
   assert.equal(calls[0].auth, env.WAW_TOKEN);
-  assert.deepEqual(calls[0].body, { type: '1' });
+  assert.deepEqual(calls[0].body, { type: 1 });
+  assert.equal(data.total, 5);
   await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(calls.length, 1, 'druga odpowiedź z pamięci');
 });
@@ -86,4 +92,17 @@ test('awaria miasta: 502 z ostatnią dobrą odpowiedzią, jedna ponowna próba',
   const r2 = await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(r2.status, 502);
   assert.deepEqual(await r2.json(), { error: 'upstream' });
+});
+
+test('/positions: pusta lista przy liczbie -> jedna próba ze stringiem', async () => {
+  mode = 'positions-string-only';
+  const data = await (await get('/positions', { 'X-App-Key': env.APP_KEY })).json();
+  assert.equal(data.positions.length, 3);
+  assert.deepEqual(calls.map((c) => c.body), [{ type: 1 }, { type: '1' }]);
+});
+
+test('/positions: odpowiedź, która nie jest listą, to błąd (502), nie pusta lista', async () => {
+  mode = 'positions-weird';
+  const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
+  assert.equal(r.status, 502);
 });

@@ -9,8 +9,10 @@ https://claude.ai/artifact/BagC8rKj55qx5zD3oFkGvH.
 - Bez frameworka i bez kroku budowania. Moduły ES ładowane wprost przez przeglądarkę.
 - Logika w `lib/` bez DOM, testowana w Node (`npm test`). Nowy stan albo reguła = nowy test.
 - Token miasta (`WAW_TOKEN`) tylko w sekretach Workera. Nigdy w repo, w kodzie strony ani w testach.
-- API miasta: `POST`, nagłówek `Authorization: <JWT>` bez `Bearer`, wartości w ciele jako stringi,
-  odpowiedzi to gołe listy, każdy błąd = `500 {"message":"Service unavailable"}`.
+- API miasta: `POST`, nagłówek `Authorization: <JWT>` bez `Bearer`, odpowiedzi to gołe listy.
+  Wartości w ciele jako stringi (odjazdy, linie), ALE pozycje chcą liczby: `{"type": 1}` – string
+  `"1"` daje pustą listę (sprawdzone 26.11.2026). Zły token = `403 {"message":"Access denied: …"}`,
+  inne błędy = `500 {"message":"Service unavailable"}`.
   Stare `api.um.warszawa.pl` nie działa – nie używać.
 - Wymiary, kolory i animacje 1:1 z kanwy; jedna krzywa `cubic-bezier(0.32, 0.72, 0, 1)`.
 - Teksty interfejsu po polsku.
