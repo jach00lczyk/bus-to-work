@@ -86,3 +86,14 @@ test('odpowiedź pozycji w formacie API', () => {
   const rows = readJson('test/fixtures/positions.json');
   assert.ok(rows.some((r) => r.Lines === '185'));
 });
+
+test('pozycje z zapasowego feedu mkuran', async () => {
+  const { parseMkuranPositions } = await import('../lib/timetable.js');
+  const body = readJson('test/fixtures/mkuran-vehicles.json');
+  const ps = parseMkuranPositions(body);
+  assert.ok(ps.length >= 1);
+  assert.ok(ps.every((p) => /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(p.time) && p.brigade && Number.isFinite(p.lat)));
+  const total185 = body.positions.filter((v) => v.id.startsWith('V/185/')).length;
+  assert.equal(ps.length, total185, 'tylko linia 185 (nie 18 ani 1850)');
+  assert.deepEqual(parseMkuranPositions(null), []);
+});

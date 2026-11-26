@@ -4,10 +4,14 @@
 // Zmienne (wrangler.toml): ALLOWED_ORIGINS – originy strony, rozdzielone przecinkami.
 
 import config from '../data/config.json' with { type: 'json' };
-import { parseRows, parsePositions, assembleTimetable } from '../lib/timetable.js';
+import { parseRows, parsePositions, parseMkuranPositions, assembleTimetable } from '../lib/timetable.js';
 import { nextFlip } from '../lib/time.js';
 
 const API = 'https://dane.um.warszawa.pl/api/action/';
+// Miasto z Cloudflare odpowiada bardzo zawodnie (26.11.2026: niemal wszystko wisi do limitu czasu).
+// Pozycje bierzemy więc najpierw z feedu mkuran.pl (ten sam źródłowy strumień z API miasta), a miasto pytamy awaryjnie.
+const MKURAN_VEHICLES = 'https://mkuran.pl/gtfs/warsaw/vehicles.json';
+const MKURAN_MAX_AGE_MS = 2 * 60_000;
 // Miasto potrafi „zgubić” połączenie z Cloudflare: zapytanie wisi, a ponowione przechodzi w ułamku sekundy.
 // Dlatego krótki limit i kilka prób (normalnie API odpowiada w 30–110 ms).
 const TIMEOUT_MS = 2500;
@@ -41,15 +45,38 @@ async function city(env, action, body) {
   throw lastErr instanceof CityError ? lastErr : new CityError(`${action}: ${lastErr?.name ?? 'błąd'} ${lastErr?.message ?? ''}`);
 }
 
+async function mkuranPositions(now) {
+  const res = await fetch(`${MKURAN_VEHICLES}?t=${Math.floor(now / 5000)}`, {
+    cache: 'no-store', signal: AbortSignal.timeout(TIMEOUT_MS)
+  });
+  if (!res.ok) throw new CityError(`mkuran: HTTP ${res.status}`);
+  const body = await res.json();
+  const feedTime = Date.parse(body?.time);
+  if (!Number.isFinite(feedTime) || now - feedTime > MKURAN_MAX_AGE_MS) throw new CityError(`mkuran: stary feed ${body?.time}`);
+  return { fetchedAt: now, source: 'mkuran', positions: parseMkuranPositions(body, config.line), total: body.positions?.length ?? 0 };
+}
+
 async function getPositions(env, now) {
   if (mem.positions && now - mem.positionsAt < POSITIONS_TTL_MS) return mem.positions;
+  try {
+    const out = await mkuranPositions(now);
+    mem.positions = out;
+    mem.positionsAt = now;
+    return out;
+  } catch (e) {
+    console.log('mkuran error', String(e?.message ?? e));
+  }
+  return cityPositions(env, now);
+}
+
+async function cityPositions(env, now) {
   // Uwaga: ta akcja chce LICZBY ({"type": 1}, jak w dokumentacji miasta); "1" daje pustą listę.
   // Pozostałe akcje chcą stringów. Pusta lista mimo to -> jedna próba ze stringiem, na wypadek zmiany API.
   let body = await city(env, 'get_ztm_lokalizacja_pojazdow', { type: 1 });
   if (Array.isArray(body) && body.length === 0) body = await city(env, 'get_ztm_lokalizacja_pojazdow', { type: '1' });
   const rows = Array.isArray(body) ? body : Array.isArray(body?.result) ? body.result : null;
   if (!rows) throw new CityError(`get_ztm_lokalizacja_pojazdow: nieoczekiwana odpowiedź ${JSON.stringify(body).slice(0, 120)}`);
-  const out = { fetchedAt: now, positions: parsePositions(rows, config.line), total: rows.length };
+  const out = { fetchedAt: now, source: 'city', positions: parsePositions(rows, config.line), total: rows.length };
   mem.positions = out;
   mem.positionsAt = now;
   return out;

@@ -5,7 +5,8 @@ Jedna strona w Safari na iPhonie: autobusy linii 185 na żywo na dwóch odcinkac
 
 - Strona: GitHub Pages, czysty HTML/CSS/JS (moduły ES), bez kroku budowania.
 - Proxy: Cloudflare Worker (`worker/index.js`), trzyma token miasta i dodaje CORS.
-- Pozycje: `dane.um.warszawa.pl` przez Workera, co 15 s.
+- Pozycje: przez Workera co 15 s – najpierw z feedu `mkuran.pl/gtfs/warsaw/vehicles.json` (te same
+  dane z API miasta, odświeżane co kilkanaście sekund), awaryjnie wprost z `dane.um.warszawa.pl`.
 - Rozkład: GTFS z mkuran.pl, przerabiany codziennie przez GitHub Actions na `data/timetable.json`
   (2 tygodnie naprzód) i publikowany razem ze stroną. Awaryjnie rozkład z API miasta przez Workera.
 
@@ -111,6 +112,11 @@ Z GTFS (mkuran.pl, `stop_id` = zespół + słupek); do potwierdzenia skryptem `c
 Słupek 06 na Marymont-Potok w kierunku „Do domu” potwierdzony w GTFS (kursy TP-GWI).
 
 ## Decyzje poza specyfikacją
+
+- **Pozycje najpierw z feedu mkuran.pl** (26.11.2026): z Cloudflare (centrum TXL) niemal każde zapytanie
+  do API miasta wisiało do limitu czasu, także z nowym tokenem. Feed mkuran (wymieniony w specyfikacji
+  jako zapasowy) jest osiągalny z Cloudflare, ma brygadę w `id` (`V/185/<brygada>`) i te same pojazdy.
+  Miasto zostaje awaryjnie. Odpowiedź `/positions` ma pole `source` (`mkuran` albo `city`).
 
 - **Rozkład z GTFS zamiast z API miasta** (26.11.2026): miasto odpowiadało Workerowi z Cloudflare
   bardzo zawodnie. Rozkład nie zmienia się w ciągu dnia, więc buduje go codzienna akcja GitHub

@@ -12,6 +12,12 @@ beforeEach(() => {
   mode = 'ok';
   mem.positions = null; mem.timetable = null; mem.stops = {}; mem.lastGood = {};
   globalThis.fetch = async (url, init) => {
+    if (String(url).startsWith('https://mkuran.pl/')) {
+      calls.push({ action: 'mkuran' });
+      if (mode !== 'mkuran-ok') return new Response('down', { status: 503 });
+      const body = readJson('test/fixtures/mkuran-vehicles.json');
+      return Response.json({ ...body, time: new Date(Date.now() - 5000).toISOString() });
+    }
     const action = String(url).split('/').at(-1);
     const body = init.body ? JSON.parse(init.body) : null;
     calls.push({ action, body, auth: init.headers.Authorization });
@@ -33,6 +39,7 @@ beforeEach(() => {
   };
 });
 
+const cityCalls = () => calls.filter((c) => c.action !== 'mkuran');
 const get = (path, headers = {}) => worker.fetch(new Request('https://proxy.example' + path, { headers: { Origin: ORIGIN, ...headers } }), env);
 
 test('bez poprawnego X-App-Key: 401, a miasto nie jest pytane', async () => {
@@ -62,11 +69,12 @@ test('/positions: token surowy, type jako liczba, tylko linia 185, cache 10 s', 
   const data = await r.json();
   assert.equal(data.positions.length, 3);
   assert.deepEqual(Object.keys(data.positions[0]).sort(), ['brigade', 'lat', 'lon', 'time', 'vehicle']);
-  assert.equal(calls[0].auth, env.WAW_TOKEN);
-  assert.deepEqual(calls[0].body, { type: 1 });
+  assert.equal(cityCalls()[0].auth, env.WAW_TOKEN);
+  assert.deepEqual(cityCalls()[0].body, { type: 1 });
   assert.equal(data.total, 5);
+  const n = calls.length;
   await get('/positions', { 'X-App-Key': env.APP_KEY });
-  assert.equal(calls.length, 1, 'druga odpowiedź z pamięci');
+  assert.equal(calls.length, n, 'druga odpowiedź z pamięci');
 });
 
 test('/timetable: 6 słupków, kursy obu kierunków', async () => {
@@ -88,7 +96,7 @@ test('awaria miasta: 502 z ostatnią dobrą odpowiedzią, jedna ponowna próba',
   calls = [];
   const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(r.status, 502);
-  assert.equal(calls.length, 3, 'trzy próby');
+  assert.equal(cityCalls().length, 3, 'trzy próby');
   const body = await r.json();
   assert.equal(body.stale, true);
   assert.deepEqual(body.positions, ok.positions);
@@ -102,7 +110,7 @@ test('/positions: pusta lista przy liczbie -> jedna próba ze stringiem', async 
   mode = 'positions-string-only';
   const data = await (await get('/positions', { 'X-App-Key': env.APP_KEY })).json();
   assert.equal(data.positions.length, 3);
-  assert.deepEqual(calls.map((c) => c.body), [{ type: 1 }, { type: '1' }]);
+  assert.deepEqual(cityCalls().map((c) => c.body), [{ type: 1 }, { type: '1' }]);
 });
 
 test('/positions: odpowiedź, która nie jest listą, to błąd (502), nie pusta lista', async () => {
@@ -115,7 +123,7 @@ test('zawodne API: zawieszone zapytanie ponawiane, odpowiedź przychodzi', async
   mode = 'flaky';
   const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
   assert.equal(r.status, 200);
-  assert.equal(calls.length, 2);
+  assert.equal(cityCalls().length, 2);
 });
 
 test('rozkład: udane słupki zapamiętane, kolejna próba dociąga tylko brakujący', async () => {
@@ -129,4 +137,14 @@ test('rozkład: udane słupki zapamiętane, kolejna próba dociąga tylko brakuj
   const r2 = await get('/timetable', { 'X-App-Key': env.APP_KEY });
   assert.equal(r2.status, 200);
   assert.deepEqual(calls.map((c) => c.body.busstopId + '/' + c.body.busstopNr), ['3292/04']);
+});
+
+test('/positions: najpierw feed mkuran, bez pytania miasta', async () => {
+  mode = 'mkuran-ok';
+  const r = await get('/positions', { 'X-App-Key': env.APP_KEY });
+  assert.equal(r.status, 200);
+  const data = await r.json();
+  assert.equal(data.source, 'mkuran');
+  assert.ok(data.positions.length >= 1);
+  assert.equal(cityCalls().length, 0);
 });
