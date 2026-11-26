@@ -33,7 +33,8 @@ const S = {
   spins: 0,
   locked: false,
   pollTimer: null,
-  inflight: { positions: false, timetable: false }
+  inflight: { positions: false, timetable: false },
+  error: null              // ostatni błąd do pokazania w stopce (diagnostyka na telefonie)
 };
 
 const $ = (id) => document.getElementById(id);
@@ -46,15 +47,19 @@ async function api(path) {
   let res;
   try {
     res = await fetch(S.proxy + path, { headers: { 'X-App-Key': S.appKey }, cache: 'no-store' });
-  } catch {
+  } catch (e) {
+    S.error = `Brak połączenia z proxy (${e?.message ?? e})`;
     return null;
   }
-  if (res.status === 401) { lock(); return null; }
-  if (!res.ok && res.status !== 502) return null;
+  if (res.status === 401) { S.error = 'Zły klucz aplikacji'; lock(); return null; }
+  if (!res.ok && res.status !== 502) { S.error = `Proxy: HTTP ${res.status}`; return null; }
   try {
     const data = await res.json();
-    return data && !data.error ? data : null; // 502 z ostatnią dobrą odpowiedzią też się liczy
+    if (res.status === 502) S.error = 'API miasta nie odpowiada';
+    if (data && !data.error) { if (res.ok) S.error = null; return data; } // 502 z ostatnią dobrą odpowiedzią też się liczy
+    return null;
   } catch {
+    S.error = `Proxy: zła odpowiedź (HTTP ${res.status})`;
     return null;
   }
 }
@@ -268,7 +273,8 @@ function render() {
   const ageText = age == null ? '–′––″' : `${Math.floor(age / 60)}′${String(age % 60).padStart(2, '0')}″`;
   if ($('age').textContent !== ageText) $('age').textContent = ageText;
   $('refresh').setAttribute('aria-label', age == null ? 'Odśwież dane' : `Odśwież dane, ostatnie sprzed ${Math.floor(age / 60)} min ${age % 60} s`);
-  $('stale').hidden = now - S.lastNewAt < STALE_WARN_MS;
+  $('stale').hidden = S.locked || now - S.lastNewAt < STALE_WARN_MS;
+  showError((S.error && (now - S.lastNewAt >= 20_000 || !S.gpsKnown)) ? S.error : null);
 
   // przełącznik
   const seg = $('seg');
@@ -344,6 +350,27 @@ document.addEventListener('visibilitychange', () => {
 });
 window.addEventListener('pageshow', (e) => { if (e.persisted && !document.hidden && !S.locked) startPolling(); });
 
+// ---------- diagnostyka i zmiana klucza ----------
+
+function showError(text) {
+  const el = $('diag');
+  const t = text ?? '';
+  if (el.textContent !== t) el.textContent = t;
+  el.hidden = !t;
+}
+
+window.addEventListener('error', (e) => showError('Błąd: ' + (e.message || e.error)));
+window.addEventListener('unhandledrejection', (e) => showError('Błąd: ' + (e.reason?.message ?? e.reason)));
+
+/** Adres z #klucz pokazuje formularz klucza (np. po zmianie APP_KEY w Workerze). */
+function keyFromHash() {
+  if (location.hash !== '#klucz') return;
+  history.replaceState(null, '', location.pathname + location.search);
+  S.locked = false;
+  lock();
+}
+window.addEventListener('hashchange', keyFromHash);
+
 // ---------- start ----------
 
 async function boot() {
@@ -356,10 +383,11 @@ async function boot() {
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   S.proxy = (local ? location.origin + '/mock' : config.proxyUrl).replace(/\/$/, '');
   for (const d of DIRS) makePanel(d);
+  if (location.hash === '#klucz') keyFromHash();
+  if (!S.appKey) lock(); // formularz przed pierwszym rysowaniem, żeby błąd w render() go nie zablokował
   render();
   setInterval(render, 1000);
-  if (!S.appKey) lock();
-  else if (!document.hidden) startPolling();
+  if (!S.locked && !document.hidden) startPolling();
 }
 
-boot();
+boot().catch((e) => showError('Błąd startu: ' + (e?.message ?? e)));
