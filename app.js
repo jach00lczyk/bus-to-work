@@ -31,6 +31,7 @@ const S = {
   pins: { praca: null, dom: null, ...(store.get(KEYS.pins) ?? {}) },
   expanded: { praca: false, dom: false },
   spins: 0,
+  posFailed: false,        // ostatnie pobranie pozycji nieudane – licznik na czerwono
   locked: false,
   pollTimer: null,
   inflight: { positions: false, timetable: false },
@@ -69,6 +70,8 @@ async function fetchPositions() {
   S.inflight.positions = true;
   try {
     const data = await api('/positions');
+    // Licznik na czerwono, gdy ostatnie pobranie się nie udało (także 502 z ostatnią dobrą odpowiedzią).
+    S.posFailed = !S.locked && (!data || !!data.stale);
     if (!data) return;
     S.gpsKnown = true;
     S.tracks = updateTracks(S.tracks, data.positions);
@@ -289,6 +292,7 @@ function render() {
   const age = S.newest == null ? null : Math.max(0, Math.floor((now - S.newest) / 1000));
   const ageText = age == null ? '–′––″' : `${Math.floor(age / 60)}′${String(age % 60).padStart(2, '0')}″`;
   if ($('age').textContent !== ageText) $('age').textContent = ageText;
+  $('refresh').classList.toggle('err', !!S.posFailed && !S.locked);
   $('refresh').setAttribute('aria-label', age == null ? 'Odśwież dane' : `Odśwież dane, ostatnie sprzed ${Math.floor(age / 60)} min ${age % 60} s`);
   $('stale').hidden = S.locked || now - S.lastNewAt < STALE_WARN_MS;
   showError((S.error && (now - S.lastNewAt >= 20_000 || !S.gpsKnown)) ? S.error : null);

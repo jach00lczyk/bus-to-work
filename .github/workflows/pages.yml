@@ -45,7 +45,7 @@ jobs:
       - name: Złóż stronę (tylko pliki potrzebne w przeglądarce)
         run: |
           mkdir -p _site
-          cp index.html styles.css app.js _site/
+          cp index.html styles.css app.js apple-touch-icon.png _site/
           cp -r lib data _site/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
